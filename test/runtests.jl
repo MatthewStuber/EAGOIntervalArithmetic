@@ -1,4 +1,6 @@
 using EAGOIntervalArithmetic
+using Compat
+using Compat.Test
 
 # write your own tests here
 println("Testing Arithmetic...")
