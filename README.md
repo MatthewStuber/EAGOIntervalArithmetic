@@ -14,7 +14,7 @@ routines used in the `EAGO` global solver. For many McCormick operators, the use
 The EAGOIntervalArithmetic.jl library introduces the type `MCInterval{T<:AbstractFloat}(lo::T,hi::T)`. Neglecting the rounding behavior it behaves identically to the `Interval(lo,hi)` type.
 
 
-![BenchmarkChart](https://github.com/MatthewStuber/EAGOIntervalArithmetic.jl/blob/master/docs/BenchmarkChart.jpg)
+![BenchmarkChart](EAGOIntervalArithmetic/docs/BenchmarkChart.jpg)
 
 Since the McCormick relaxations used in this solver aren't themselves correctly rounded, it's often acceptable to omit corrections for rounding in the interval field. For problems there are very poorly scaled or have very poorly scaled intermediate terms, the use of a corrected rounding procedures may be recommended.
 
