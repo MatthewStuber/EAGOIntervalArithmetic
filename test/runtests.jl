@@ -1,5 +1,6 @@
 using EAGOIntervalArithmetic
-using Base.Test
 
 # write your own tests here
-@test 1 == 2
+println("Testing Arithmetic...")
+t = @elapsed include("arithmetic_test.jl")
+println("done (took $t seconds).")
