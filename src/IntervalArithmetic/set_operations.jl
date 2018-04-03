@@ -14,7 +14,7 @@ function isdisjoint(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
 end
 
 function intersect(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
-    isdisjoint(a,b) && return emptyinterval(T)
+    isdisjoint(a,b) && return emptyMCinterval(T)
 
     MCInterval{T}(max(a.lo, b.lo), min(a.hi, b.hi))
 end

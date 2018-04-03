@@ -4,7 +4,7 @@ function ^(a::MCInterval{T}, n::Integer) where {T<:AbstractFloat}
     n == 0 && return one(a)
     n == 1 && return a
     n == 2 && return sqr(a)
-    n < 0 && a == zero(a) && return emptyinterval(T)
+    n < 0 && a == zero(a) && return emptyMCinterval(T)
 
     if isodd(n) # odd power
         isentire(a) && return a
@@ -21,7 +21,7 @@ function ^(a::MCInterval{T}, n::Integer) where {T<:AbstractFloat}
                 a.hi == 0 && return MCInterval{T}(ninfty(T), a.lo^n)
                 return MCInterval{T}(a.hi^n, a.lo^n)
             else
-                return entireinterval(T)
+                return entireMCinterval(T)
             end
         end
 
@@ -104,7 +104,7 @@ for f in (:log, :log2, :log10, :log1p)
             domain = MCInterval{T}(zero(T), Inf)
             a = a ∩ domain
 
-            (isempty(a) || a.hi ≤ zero(T)) && return emptyinterval(a)
+            (isempty(a) || a.hi ≤ zero(T)) && return emptyMCinterval(a)
 
             MCInterval{T}(($f)(a.lo), ($f)(a.hi))
 

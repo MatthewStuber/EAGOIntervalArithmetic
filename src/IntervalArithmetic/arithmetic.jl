@@ -68,12 +68,12 @@ one(::Type{MCInterval{T}}) where T<:AbstractFloat = MCInterval(one(T))
 -(a::MCInterval) = MCInterval(-a.hi, -a.lo)
 
 function +(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(T)
     MCInterval{T}(a.lo + b.lo, a.hi + b.hi)
 end
 
 function -(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(T)
     MCInterval{T}(a.lo - b.hi, a.hi - b.lo)
 end
 
@@ -81,7 +81,7 @@ end
 ## Multiplication
 
 function *(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(T)
 
     (iszero(a) || iszero(b)) && return zero(MCInterval{T})
 
@@ -104,13 +104,13 @@ end
 ## Division
 
 function inv(a::MCInterval{T}) where T<:AbstractFloat
-    isempty(a) && return emptyinterval(T)
+    isempty(a) && return emptyMCinterval(T)
 
     if zero(T) ∈ a
         a.lo < zero(T) == a.hi && return MCInterval{T}(-Inf, inv(a.lo))
         a.lo == zero(T) < a.hi && return MCInterval{T}((inv(a.hi), Inf))
-        a.lo < zero(T) < a.hi && return entireinterval(T)
-        a == zero(a) && return emptyinterval(T)
+        a.lo < zero(T) < a.hi && return entireMCinterval(T)
+        a == zero(a) && return emptyMCinterval(T)
     end
 
     MCInterval{T}(inv(a.hi), inv(a.lo))
@@ -119,8 +119,8 @@ end
 function /(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
 
     S = typeof(a.lo / b.lo)
-    (isempty(a) || isempty(b)) && return emptyinterval(S)
-    iszero(b) && return emptyinterval(S)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(S)
+    iszero(b) && return emptyMCinterval(S)
 
     if b.lo > zero(T) # b strictly positive
 
@@ -142,17 +142,17 @@ function /(a::MCInterval{T}, b::MCInterval{T}) where T<:AbstractFloat
 
             a.lo >= zero(T) && return MCInterval{T}(a.lo/b.hi, Inf)
             a.hi <= zero(T) && return MCInterval{T}(-Inf, a.hi/b.hi)
-            return entireinterval(S)
+            return entireMCinterval(S)
 
         elseif iszero(b.hi)
 
             a.lo >= zero(T) && return MCInterval{T}(-Inf, a.lo/b.lo)
             a.hi <= zero(T) && return MCInterval{T}(a.hi/b.lo, Inf)
-            return entireinterval(S)
+            return entireMCinterval(S)
 
         else
 
-            return entireinterval(S)
+            return entireMCinterval(S)
 
         end
     end
@@ -173,15 +173,15 @@ end
 function fma(a::MCInterval{T}, b::MCInterval{T}, c::MCInterval{T}) where T
     #T = promote_type(eltype(a), eltype(b), eltype(c))
 
-    (isempty(a) || isempty(b) || isempty(c)) && return emptyinterval(T)
+    (isempty(a) || isempty(b) || isempty(c)) && return emptyMCinterval(T)
 
     if isentire(a)
         b == zero(b) && return c
-        return entireinterval(T)
+        return entireMCinterval(T)
 
     elseif isentire(b)
         a == zero(a) && return c
-        return entireinterval(T)
+        return entireMCinterval(T)
 
     end
 
@@ -225,17 +225,17 @@ sup(a::MCInterval) = a.hi
 real(a::MCInterval) = a
 
 function abs(a::MCInterval{T}) where {T<:AbstractFloat}
-    isempty(a) && return emptyinterval(T)
+    isempty(a) && return emptyMCinterval(T)
     MCInterval{T}(mig(a), mag(a))
 end
 
 function min(a::MCInterval{T}, b::MCInterval{T}) where {T<:AbstractFloat}
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(T)
     MCInterval{T}( min(a.lo, b.lo), min(a.hi, b.hi))
 end
 
 function max(a::MCInterval{T}, b::MCInterval{T}) where {T<:AbstractFloat}
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyMCinterval(T)
     MCInterval{T}( max(a.lo, b.lo), max(a.hi, b.hi))
 end
 
@@ -244,22 +244,22 @@ eps(a::MCInterval) = max(eps(a.lo), eps(a.hi))
 
 ## floor, ceil, trunc, sign, roundTiesToEven, roundTiesToAway
 function floor(a::MCInterval{T}) where {T<:AbstractFloat}
-    isempty(a) && return emptyinterval(a)
+    isempty(a) && return emptyMCinterval(a)
     MCInterval{T}(floor(a.lo), floor(a.hi))
 end
 
 function ceil(a::MCInterval{T}) where {T<:AbstractFloat}
-    isempty(a) && return emptyinterval(T)
+    isempty(a) && return emptyMCinterval(T)
     MCInterval{T}(ceil(a.lo), ceil(a.hi))
 end
 
 function trunc(a::MCInterval{T}) where {T<:AbstractFloat}
-    isempty(a) && return emptyinterval(T)
+    isempty(a) && return emptyMCinterval(T)
     MCInterval{T}(trunc(a.lo), trunc(a.hi))
 end
 
 function sign(a::MCInterval{T}) where {T<:AbstractFloat}
-    isempty(a) && return emptyinterval(T)
+    isempty(a) && return emptyMCinterval(T)
     return MCInterval{T}(sign(a.lo), sign(a.hi))
 end
 
@@ -304,7 +304,7 @@ function radius(a::MCInterval{T}) where {T<:AbstractFloat}
 end
 
 function step(x::MCInterval{T}) where {T}
-      isempty(x) && return emptyinterval(T)
+      isempty(x) && return emptyMCinterval(T)
       xmin::T = ((x.lo)<zero(T)) ? zero(T) : one(T)
       xmax::T = ((x.hi)>=zero(T)) ? one(T) : zero(T)
       return MCInterval{T}(xmin,xmax)

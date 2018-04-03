@@ -39,7 +39,7 @@ function atanh(a::MCInterval{T}) where T<:AbstractFloat
     res_lo = atanh(a.lo)
     res_hi = atanh(a.hi)
 
-    (res_lo == res_hi == Inf || res_lo == res_hi == -Inf) && return emptyinterval(T)
+    (res_lo == res_hi == Inf || res_lo == res_hi == -Inf) && return emptyMCinterval(T)
 
     return MCInterval{T}(res_lo, res_hi)
 end
